@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\MainController;
 use Illuminate\Support\Facades\Route;
 
@@ -15,8 +16,11 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', [MainController::class, 'home']);
-Route::get('/contacts', [MainController::class, 'contacts']);
+Route::get('/', [MainController::class, 'home'])->name('main');
+
+Route::get('/contacts', [MainController::class, 'contacts'])->name('contacts');
+
 Route::post('/send-email', [MainController::class, 'send']);
 
 Route::resource('/admin/categories', CategoryController::class);
+Route::resource('/admin/products', ProductController::class);

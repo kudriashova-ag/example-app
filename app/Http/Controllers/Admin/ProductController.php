@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class ProductController extends Controller
 {
@@ -15,7 +17,8 @@ class ProductController extends Controller
      */
     public function index()
     {
-        //
+        $products = Product::with('category')->paginate(5);
+        return view('admin.products.index', compact('products'));
     }
 
     /**
@@ -25,7 +28,8 @@ class ProductController extends Controller
      */
     public function create()
     {
-        //
+        $categories = Category::all()->pluck('name', 'id');
+        return view('admin.products.create', compact('categories'));
     }
 
     /**
