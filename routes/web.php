@@ -4,7 +4,7 @@ use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\MainController;
 use Illuminate\Support\Facades\Route;
-
+use \UniSharp\LaravelFilemanager\Lfm;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -24,3 +24,8 @@ Route::post('/send-email', [MainController::class, 'send']);
 
 Route::resource('/admin/categories', CategoryController::class);
 Route::resource('/admin/products', ProductController::class);
+
+
+Route::group(['prefix' => 'laravel-filemanager', 'middleware' => ['web']], function () {
+  Lfm::routes();
+});

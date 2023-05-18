@@ -40,7 +40,22 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'name' => 'required',
+            'price' => 'required',
+        ]);
+
+  
+
+        $product = Product::create($request->all());
+
+        // if($request->image){
+        //     $product->image = $request->image->store('uploads');
+        //     $product->save();
+        // }
+
+
+        return redirect('/admin/products');
     }
 
     /**
@@ -62,7 +77,8 @@ class ProductController extends Controller
      */
     public function edit(Product $product)
     {
-        //
+        $categories = Category::all()->pluck('name', 'id');
+        return view('admin.products.edit', compact('categories', 'product'));
     }
 
     /**
@@ -74,7 +90,19 @@ class ProductController extends Controller
      */
     public function update(Request $request, Product $product)
     {
-        //
+        $request->validate([
+            'name' => 'required',
+            'price' => 'required',
+        ]);
+
+        $product->update($request->all());
+
+        // if ($request->image) {
+        //     $product->image = $request->image->store('uploads');
+        //     $product->save();
+        // }
+        
+        return redirect('/admin/products');
     }
 
     /**
@@ -85,6 +113,7 @@ class ProductController extends Controller
      */
     public function destroy(Product $product)
     {
-        //
+        $product->delete();
+        return redirect('/admin/products');
     }
 }

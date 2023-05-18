@@ -21,7 +21,7 @@
         @foreach ($products as $product)
         <tr>
           <td>{{$loop->iteration + ($products->currentPage() - 1) * $products->perPage()}}</td>
-          <td><img src="{{$product->image}}" alt="{{$product->name}}" style="width: 100px"></td>
+          <td><img src="{{asset($product->image)}}" alt="{{$product->name}}" style="width: 100px"></td>
           <td>{{$product->name}}</td>
           <td>{{$product->price}}</td>
           <td>{{$product->category->name}}</td>
