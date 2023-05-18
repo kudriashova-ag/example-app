@@ -22,4 +22,9 @@ class Product extends Model
             get: fn($value) => $value ? $value : '/assets/images/no-image.png'
         );
     }
+
+    public function tags()
+    {
+        return $this->belongsToMany(Tag::class);
+    }
 }

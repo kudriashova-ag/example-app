@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\Product;
+use App\Models\Tag;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -29,7 +30,8 @@ class ProductController extends Controller
     public function create()
     {
         $categories = Category::all()->pluck('name', 'id');
-        return view('admin.products.create', compact('categories'));
+        $tags = Tag::all()->pluck('name', 'id');
+        return view('admin.products.create', compact('categories', 'tags'));
     }
 
     /**
@@ -48,7 +50,7 @@ class ProductController extends Controller
   
 
         $product = Product::create($request->all());
-
+        $product->tags()->sync($request->tags);
         // if($request->image){
         //     $product->image = $request->image->store('uploads');
         //     $product->save();
@@ -78,7 +80,8 @@ class ProductController extends Controller
     public function edit(Product $product)
     {
         $categories = Category::all()->pluck('name', 'id');
-        return view('admin.products.edit', compact('categories', 'product'));
+        $tags = Tag::all()->pluck('name', 'id');
+        return view('admin.products.edit', compact('categories', 'product', 'tags'));
     }
 
     /**
@@ -96,12 +99,13 @@ class ProductController extends Controller
         ]);
 
         $product->update($request->all());
-
+        $product->tags()->sync($request->tags);
+        
         // if ($request->image) {
         //     $product->image = $request->image->store('uploads');
         //     $product->save();
         // }
-        
+
         return redirect('/admin/products');
     }
 

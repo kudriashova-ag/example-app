@@ -13,6 +13,13 @@
   {!! Form::select('category_id', $categories, null, ['class'=>'form-control']) !!}
 </div>
 
+
+<div class="form-group mt-3">
+  {!! Form::label('tags', 'Tags') !!}
+  {!! Form::select('tags[]', $tags, null, ['class'=>'form-control', 'multiple'=>'multiple', 'id'=>'tags']) !!}
+</div>
+
+
 <div class="form-group mt-3">
   {!! Form::label('description', 'Description') !!}
   {!! Form::textarea('description', null, ['class'=>'form-control']) !!}
@@ -36,7 +43,9 @@
  </div>
 
  <div id="holder" style="margin-top:15px;max-height:100px;">
-  <img src="{{asset($product->image)}}" alt="" style="width: 100px">
+  @isset($product)
+    <img src="{{asset($product->image)}}" alt="" style="width: 100px">
+  @endisset
   </div>
 
 
@@ -82,14 +91,10 @@
   };
 
 
-var route_prefix = "/laravel-filemanager";
-lfm('lfm', 'image', {prefix: route_prefix});
+  var route_prefix = "/laravel-filemanager";
+  lfm('lfm', 'image', {prefix: route_prefix});
 
 </script>
-
-
-
-
 
 <script src="//cdn.ckeditor.com/4.6.2/standard/ckeditor.js"></script>
 <script>
@@ -101,4 +106,16 @@ lfm('lfm', 'image', {prefix: route_prefix});
   };
 
   CKEDITOR.replace('description', options);
+</script>
+
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+<script>
+  $(document).ready(function() {
+    $('#tags').select2();
+  });
 </script>
