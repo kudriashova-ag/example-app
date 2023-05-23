@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\ProductController;
+use App\Http\Controllers\CartController;
 use App\Http\Controllers\MainController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -23,6 +24,15 @@ Route::post('/send-email', [MainController::class, 'send']);
 
 Route::get('/category/{category:slug}', [MainController::class, 'category']);
 Route::get('/product/{product:slug}', [MainController::class, 'product']);
+
+
+Route::post('/cart/add', [CartController::class, 'add']);
+Route::post('/cart/delete', [CartController::class, 'delete']);
+Route::delete('/cart/clear', [CartController::class, 'clear']);
+
+
+Route::get('/checkout', [MainController::class, 'checkout']);
+
 
 
 Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin']], function () {

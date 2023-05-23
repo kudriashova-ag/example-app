@@ -48,4 +48,15 @@ class MainController extends Controller
         $products = Product::where('category_id', $category->id)->paginate(24);
         return view('category', compact('category', 'products'));
     }
+
+    public function product(Product $product)
+    {
+        return view('product', compact('product'));
+    }
+
+
+    public function checkout()
+    {
+        # code...
+    }
 }
