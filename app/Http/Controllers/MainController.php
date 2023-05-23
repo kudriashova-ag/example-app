@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
+use App\Models\Product;
 use Illuminate\Http\Request;
 
 class MainController extends Controller
@@ -38,5 +40,12 @@ class MainController extends Controller
 
         // return redirect('/contacts');
         return back()->with('success', 'Thank you!');
+    }
+
+
+    public function category(Category $category)
+    {
+        $products = Product::where('category_id', $category->id)->paginate(24);
+        return view('category', compact('category', 'products'));
     }
 }
