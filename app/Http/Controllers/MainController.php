@@ -2,9 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\ContactEmail;
 use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cookie;
+use Illuminate\Support\Facades\Mail;
+use LiqPay;
 
 class MainController extends Controller
 {
@@ -35,9 +39,22 @@ class MainController extends Controller
         $name = $request->name;
         $email = $request->email;
         $message = $request->message;
+        
+
+        //telegram
+        // https://api.telegram.org/bot  token  /sendMessage?text=Hello
+        $data = [
+            'chat_id' => env('TELEGRAM_CHAT_ID'),
+            'text' => "$name \r\n $email \r\n $message"
+        ];
+        
+        $ch = curl_init('https://api.telegram.org/bot' . env('TELEGRAM_BOT') . '/sendMessage?' . http_build_query($data));
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_exec($ch);
+        curl_close($ch);
 
         // send email
-
+        Mail::to('kudriashova.ag@gmail.com')->send(new ContactEmail($name, $email, $message));
         // return redirect('/contacts');
         return back()->with('success', 'Thank you!');
     }
@@ -57,6 +74,56 @@ class MainController extends Controller
 
     public function checkout()
     {
-        # code...
+        $public_key = env('LIQPAY_PUBLIC');
+        $private_key = env('LIQPAY_PRIVATE');
+
+        $order_id = time();
+
+        $liqpay = new LiqPay($public_key, $private_key);
+        $html = $liqpay->cnb_form(array(
+                'action'         => 'pay',
+                'amount'         => '1',
+                'currency'       => 'UAH',
+                'description'    => 'description text',
+                'order_id'       => $order_id,
+                'version'        => '3',
+                'result_url'     => 'http://example-app/api/pay?order_id=' . $order_id
+        ));
+
+        return view('checkout', compact('html'));
+
     }
+
+    public function pay(Request $request)
+    {
+
+        $private_key = env('LIQPAY_PRIVATE');
+        $public_key = env('LIQPAY_PUBLIC');
+
+        $sign = base64_encode(sha1(
+            $private_key .
+            $request->data .
+                $private_key,
+            1
+        ));
+
+        if($sign === $request->signature){
+
+            $liqpay = new LiqPay($public_key, $private_key);
+            $res = $liqpay->api("request", array(
+                'action'        => 'status',
+                'version'       => '3',
+                'order_id'      => $request->order_id
+            ));
+            dd($res->status );
+        }
+        else{
+            dd('Error');
+        }
+    }
+
+
+
+
+
 }
